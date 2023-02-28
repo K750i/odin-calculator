@@ -11,6 +11,7 @@ const showResult = (v) => display.textContent = v;
 let currentOperand;
 let result = 0;
 let operator;
+let disabled = true, equalPressed = false;
 
 
 buttons.addEventListener('click', function (e) {
@@ -18,14 +19,22 @@ buttons.addEventListener('click', function (e) {
   if (value) {
     showResult(value);
     currentOperand = parseInt(value);
+    disabled = false;
   }
 
   if (e.target.classList.contains('operator-add')) {
-    if (currentOperand !== null) {
+    if (equalPressed) {
+      operator = add;
+      currentOperand = result;
+      equalPressed = false;
+      return;
+    }
+    if (!disabled) {
       operator = add;
       result = operate(operator, currentOperand, result);
+      currentOperand = result;
       showResult(result);
-      currentOperand = null;
+      disabled = true;
     }
   }
 
@@ -42,6 +51,11 @@ buttons.addEventListener('click', function (e) {
   }
 
   if (e.target.classList.contains('operator-eq')) {
-
+    if (operator) {
+      result = operate(operator, currentOperand, result);
+      showResult(result);
+      equalPressed = true;
+      disabled = true;
+    }
   }
 });
